@@ -1,0 +1,52 @@
+[project]
+name = "estafette"
+version = "0.1.0"
+description = "Mechanically assess whether a proof of concept is transferable, and report it."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "EUPL-1.2"
+license-files = ["LICENSE"]
+authors = [{ name = "estafette contributors" }]
+keywords = ["transferability", "public-code", "reuse", "sbom", "provenance"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+]
+
+[project.scripts]
+estafette = "estafette.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/MWest2020/estafette"
+Repository = "https://github.com/MWest2020/estafette"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "ruff>=0.5",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/estafette"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
