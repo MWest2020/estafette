@@ -34,4 +34,4 @@
 ## 6. CI
 
 - [x] 6.1 Add `.github/workflows/ci.yml`: `uv sync`, `ruff check`, `pytest` on push/PR
-- [ ] 6.2 Confirm CI is green on the first push
+- [x] 6.2 Confirm CI is green on the first push
