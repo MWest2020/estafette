@@ -46,4 +46,4 @@
 
 - [x] 8.1 All checks green under `ruff` and `pytest`; every module ≤ 200 lines (I7)
 - [x] 8.2 Document external tool prerequisites (`reuse`, `gitleaks`, `syft`) in the README
-- [ ] 8.3 CI installs the external tools (or skips those tests deterministically) and stays green
+- [x] 8.3 CI installs the external tools (or skips those tests deterministically) and stays green
