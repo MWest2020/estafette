@@ -2,12 +2,13 @@
 
 ### Requirement: Build section
 
-The manifest MAY include an optional `build` section that tells the harness how
-to build and run the target — declared, not guessed. It MAY specify:
-`containerfile` (path to a Containerfile/Dockerfile, with sensible default
-detection), `readiness` (`exits-zero` | `stays-up`), `timeout_seconds`, and
-resource caps (`cpus`, `memory`). When absent, the harness reports the silver
-preview as not assessable rather than guessing.
+The manifest SHALL support an optional `build` section that tells the harness
+how to build and run the target — declared, not guessed. The section MAY
+specify: `containerfile` (path to a Containerfile/Dockerfile, with sensible
+default detection), `readiness` (`exits-zero` | `stays-up`), `timeout_seconds`,
+and resource caps (`cpus`, `memory`). When the section is absent, the manifest
+SHALL still validate and the harness SHALL report the silver preview as not
+assessable rather than guessing.
 
 #### Scenario: Build section parses
 
