@@ -32,6 +32,7 @@ Repository = "https://github.com/MWest2020/estafette"
 dev = [
     "pytest>=8.2",
     "ruff>=0.5",
+    "reuse>=5",
 ]
 
 [build-system]

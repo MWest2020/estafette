@@ -89,6 +89,20 @@ The transfer manifest is designed as an **extension profile of
 names align where overlap exists. See
 [`docs/manifest-spec.md`](docs/manifest-spec.md).
 
+## Prerequisites
+
+The static checks orchestrate three external scanners (invariant: *orchestrate,
+don't reinvent*). Install them and put them on your `PATH`:
+
+| Tool | Used by | Install |
+| ---- | ------- | ------- |
+| [REUSE](https://reuse.software/) | licence/copyright coverage | shipped as a dev dependency; `uv sync` provides it |
+| [`gitleaks`](https://github.com/gitleaks/gitleaks) | secret detection | download the release binary |
+| [`syft`](https://github.com/anchore/syft) | SBOM generation | `curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh \| sh -s -- -b ~/.local/bin` |
+
+If a required tool is missing, `estafette assess` exits with a clear error
+naming it — a missing scanner never reads as a pass.
+
 ## Development
 
 This project uses the [OpenSpec](https://github.com/Fission-AI/OpenSpec)
@@ -96,8 +110,9 @@ workflow (propose → apply → archive). Proposed and in-progress work lives un
 [`openspec/changes/`](openspec/changes/).
 
 ```bash
-uv sync            # install dependencies
-uv run pytest      # run tests
+uv sync            # install dependencies (incl. reuse)
+uv run pytest      # run tests (scanner-dependent tests skip if a tool is absent)
+uv run ruff check  # lint
 ```
 
 ## Licence
