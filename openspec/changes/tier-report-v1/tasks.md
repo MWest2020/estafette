@@ -22,4 +22,4 @@
 - [x] 4.1 `assess` computes the verdict, writes the report, prints verdict + report path
 - [x] 4.2 Remove the "tier verdict not yet implemented" notice; silver stays informational
 - [x] 4.3 Cut `docs/tiers.md` to v1.0 (bronze normative + implemented)
-- [ ] 4.4 `ruff` + `pytest` green; every module ≤ 200 lines (I7); CI stays green
+- [x] 4.4 `ruff` + `pytest` green; every module ≤ 200 lines (I7); CI stays green
