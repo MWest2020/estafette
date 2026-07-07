@@ -39,4 +39,4 @@
 - [x] 6.1 Refine `docs/tiers.md` silver section to match the implemented preview
 - [x] 6.2 README: podman as an optional prerequisite; note the build-stage egress limitation
 - [x] 6.3 `ruff` + `pytest` green; every module ≤ 200 lines (I7)
-- [ ] 6.4 Harness integration tests gated on podman; classifier/manifest tests run in CI; CI stays green
+- [x] 6.4 Harness integration tests gated on podman; classifier/manifest tests run in CI; CI stays green (CI ran the live podman build+run: 60 passed)
