@@ -99,9 +99,17 @@ don't reinvent*). Install them and put them on your `PATH`:
 | [REUSE](https://reuse.software/) | licence/copyright coverage | shipped as a dev dependency; `uv sync` provides it |
 | [`gitleaks`](https://github.com/gitleaks/gitleaks) | secret detection | download the release binary |
 | [`syft`](https://github.com/anchore/syft) | SBOM generation | `curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh \| sh -s -- -b ~/.local/bin` |
+| [`podman`](https://podman.io/) *(optional)* | build harness / silver preview | rootless; absence degrades the silver preview gracefully |
 
-If a required tool is missing, `estafette assess` exits with a clear error
-naming it — a missing scanner never reads as a pass.
+If a required **scanner** is missing, `estafette assess` exits with a clear
+error naming it — a missing scanner never reads as a pass. `podman` is
+**optional**: when it is absent or unusable, the informational silver preview
+reports *not assessable* and the bronze verdict is unaffected.
+
+> **Security note:** the harness run stage executes assessed code with no
+> network, no host environment, resource caps, and a read-only root filesystem
+> (invariant I4). The build stage currently permits network egress for
+> dependency fetch — see [`docs/tiers.md`](docs/tiers.md).
 
 ## Development
 

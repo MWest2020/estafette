@@ -36,6 +36,13 @@ class Sensitivity(StrEnum):
     secret = "secret"
 
 
+class Readiness(StrEnum):
+    """How the harness decides the target reached a running state."""
+
+    exits_zero = "exits-zero"
+    stays_up = "stays-up"
+
+
 class DataRequirements(BaseModel):
     """Declared data requirements (feed the gold tier; roadmap)."""
 
@@ -45,6 +52,18 @@ class DataRequirements(BaseModel):
     volume: str | None = None
     sensitivity: Sensitivity | None = None
     synthetic_data: bool | None = None
+
+
+class BuildSpec(BaseModel):
+    """How to build and run the target in the harness (declared, not guessed)."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    containerfile: str | None = None
+    readiness: Readiness = Readiness.stays_up
+    timeout_seconds: int = Field(default=30, gt=0)
+    cpus: float | None = Field(default=None, gt=0)
+    memory: str | None = None
 
 
 class TransferManifest(BaseModel):
@@ -60,6 +79,7 @@ class TransferManifest(BaseModel):
     deps: list[str] = Field(default_factory=list)
     deployment_target: str | None = None
     data: DataRequirements | None = None
+    build: BuildSpec | None = None
 
 
 class ManifestError(Exception):

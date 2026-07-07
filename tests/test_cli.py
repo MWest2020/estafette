@@ -66,8 +66,12 @@ def test_assess_clean_repo_all_pass(tmp_path):
     assert "Tool versions:" in out
     # No tier verdict anywhere (invariant I1).
     lower = out.lower()
-    for tier in ("bronze", "silver", "gold"):
+    for tier in ("bronze", "gold"):
         assert tier not in lower
+    # "silver" appears only inside the informational "Silver preview" label,
+    # never as a gated tier verdict.
+    assert "silver preview" in lower
+    assert "not assessable" in lower  # clean fixture declares no build recipe
     assert "tier verdict is not yet implemented" in lower
 
 

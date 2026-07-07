@@ -62,6 +62,18 @@ error:
 harness result is reported **informationally** as a silver preview: *"would
 this pass silver: yes/no + gaps."*
 
+The preview is driven by the manifest's `build` section (containerfile,
+readiness mode, timeout, caps). Reaching a running state is judged by the
+declared readiness mode (`stays-up` or `exits-zero`). On failure the harness
+emits one diagnostic classification with an actionable gap. When rootless
+podman is absent or unusable, or the manifest declares no build recipe, the
+preview reports *not assessable* — it never blocks the bronze verdict.
+
+> **Known limitation (v1):** the build stage currently has unrestricted network
+> egress (dependency fetch runs arbitrary build scripts). The *run* stage —
+> where the assessed code executes — is strictly network-free. A build-stage
+> egress allowlist is planned hardening.
+
 ---
 
 ## Gold — third-party deployable *(roadmap — specified, not enforced in v1)*

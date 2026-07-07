@@ -14,6 +14,7 @@ import typer
 
 from estafette import __version__
 from estafette.assessment import build_checks, run_checks
+from estafette.checks.build import SilverPreview, preview_silver
 from estafette.checks.protocol import CheckResult, CheckStatus
 from estafette.checks.tooling import ToolNotFound
 from estafette.manifest import (
@@ -69,6 +70,21 @@ def _print_versions(results: list[tuple[str, CheckResult]]) -> None:
         typer.echo("Tool versions: " + ", ".join(f"{t}={v}" for t, v in sorted(versions.items())))
 
 
+def _print_silver(preview: SilverPreview) -> None:
+    typer.echo("")
+    typer.echo("Silver preview (informational — does not affect the verdict):")
+    if not preview.available:
+        typer.echo(f"  not assessable — {preview.reason}")
+        return
+    if preview.would_pass:
+        typer.echo("  would pass silver: yes")
+        return
+    typer.echo(f"  would pass silver: no ({preview.classification})")
+    for gap in preview.gaps:
+        typer.echo(f"        - {gap.message}")
+        typer.echo(f"          fix: {gap.remediation}")
+
+
 @app.command()
 def assess(
     target: Annotated[str, typer.Argument(help="Path to a repository (or a git URL).")],
@@ -97,6 +113,7 @@ def assess(
     for name, result in results:
         _print_result(name, result)
     _print_versions(results)
+    _print_silver(preview_silver(Path(target), loaded))
     typer.echo("")
     typer.echo("NOTE: tier verdict is not yet implemented (tier-report-v1). No tier is produced.")
 

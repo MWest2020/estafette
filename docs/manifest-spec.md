@@ -32,6 +32,23 @@ The manifest is a YAML file (default name `transfer.yaml`, overridable with
 | `deps` | list | no | Declared runtime dependencies; compared against imports/lockfiles by `deps_reality`. |
 | `deployment_target` | string | no | Where this is meant to run (e.g. `kubernetes`, `docker-compose`, `vm`). Used by gold (roadmap). |
 | `data` | object | no | Data requirements — see below. |
+| `build` | object | no | How the harness builds and runs the target — see below. |
+
+### `build` — harness recipe
+
+Tells the build harness how to build and run the target (declared, never
+guessed). When absent, the silver preview is reported as *not assessable*.
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `containerfile` | string | Path to a Containerfile/Dockerfile (default detection when omitted). |
+| `readiness` | enum | `stays-up` (default) or `exits-zero` — how "reached a running state" is decided. |
+| `timeout_seconds` | int | Wall-clock cap / readiness window (default 30). |
+| `cpus` | number | CPU cap for the run stage. |
+| `memory` | string | Memory cap for the run stage (e.g. `256m`). |
+
+The run stage always executes with no network, no host environment, and a
+read-only root filesystem (invariant I4), regardless of these values.
 
 ### `data` — data requirements
 
