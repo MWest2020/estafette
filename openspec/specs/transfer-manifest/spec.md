@@ -44,3 +44,28 @@ The system SHALL load a manifest from a YAML file path, defaulting to
 - **WHEN** the resolved manifest path does not exist
 - **THEN** the system reports an actionable error naming the expected path, and does not crash with a raw traceback
 
+### Requirement: Build section
+
+The manifest SHALL support an optional `build` section that tells the harness
+how to build and run the target — declared, not guessed. The section MAY
+specify: `containerfile` (path to a Containerfile/Dockerfile, with sensible
+default detection), `readiness` (`exits-zero` | `stays-up`), `timeout_seconds`,
+and resource caps (`cpus`, `memory`). When the section is absent, the manifest
+SHALL still validate and the harness SHALL report the silver preview as not
+assessable rather than guessing.
+
+#### Scenario: Build section parses
+
+- **WHEN** a manifest includes a `build` section with a containerfile and readiness mode
+- **THEN** it validates and the values are available to the harness
+
+#### Scenario: Build section is optional
+
+- **WHEN** a manifest omits the `build` section
+- **THEN** the manifest still validates, and the harness reports silver as not assessable (no build recipe)
+
+#### Scenario: Invalid readiness mode is rejected
+
+- **WHEN** `build.readiness` is set to a value outside the allowed set
+- **THEN** manifest validation fails with an actionable error naming the allowed values
+
