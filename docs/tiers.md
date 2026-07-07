@@ -1,6 +1,11 @@
 # Transferability tiers
 
-**Version:** 1.0 (bronze implemented; silver/gold specified as roadmap)
+**Version:** 1.0 (bronze implemented and emitted by the engine; silver
+informational; gold specified as roadmap)
+
+The engine emits the bronze verdict mechanically into the transferability report
+(`report.json` + `report.md`), recording this tier-doc version alongside the
+target commit and tool versions.
 
 This document is **normative**. A tier is only ever the output of the estafette
 engine on a specific commit (invariant **I1**). Nothing in this document may be

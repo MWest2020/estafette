@@ -23,8 +23,11 @@ from estafette.manifest import (
     load_manifest,
     resolve_manifest_path,
 )
+from estafette.report import build_report, capture_commit, write_report
+from estafette.tier import compute_bronze
 
 _MANIFEST_HELP = "Transfer manifest path (default: <target>/transfer.yaml)."
+_REPORTS_HELP = "Directory reports accumulate in (default: reports/)."
 
 app = typer.Typer(
     add_completion=False,
@@ -92,8 +95,12 @@ def assess(
         Path | None,
         typer.Option("--manifest", help=_MANIFEST_HELP),
     ] = None,
+    reports_dir: Annotated[
+        Path,
+        typer.Option("--reports-dir", help=_REPORTS_HELP),
+    ] = Path("reports"),
 ) -> None:
-    """Load the manifest for TARGET and run the static checks (no tier yet)."""
+    """Assess TARGET: run the checks, compute the bronze verdict, write the report."""
     manifest_path = resolve_manifest_path(target, manifest)
     try:
         loaded = load_manifest(manifest_path)
@@ -113,9 +120,21 @@ def assess(
     for name, result in results:
         _print_result(name, result)
     _print_versions(results)
-    _print_silver(preview_silver(Path(target), loaded))
+
+    preview = preview_silver(Path(target), loaded)
+    _print_silver(preview)
+
+    verdict = compute_bronze(results, loaded)
+    commit = capture_commit(Path(target))
+    report = build_report(Path(target), loaded, results, verdict, preview, __version__, commit)
+    report_dir = write_report(reports_dir, report)
+
     typer.echo("")
-    typer.echo("NOTE: tier verdict is not yet implemented (tier-report-v1). No tier is produced.")
+    typer.secho(
+        f"Bronze verdict: {'PASS' if verdict.passed else 'FAIL'}",
+        fg=typer.colors.GREEN if verdict.passed else typer.colors.YELLOW,
+    )
+    typer.echo(f"Report written: {report_dir / 'report.md'}")
 
 
 if __name__ == "__main__":  # pragma: no cover
