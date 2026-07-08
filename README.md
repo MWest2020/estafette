@@ -9,8 +9,12 @@ a *transfer manifest* and produces a **transferability report** with a tier
 verdict. It orchestrates existing, trusted scanners rather than reinventing
 them.
 
-- **Status:** early development (v1 in progress). See
-  [`openspec/project.md`](openspec/project.md) for the full plan.
+- **Status:** v1 complete — `estafette assess` produces a bronze verdict and a
+  transferability report. See [`openspec/project.md`](openspec/project.md) for
+  the plan.
+- **Example report (SIDN Pioniers annex):** estafette assessed on itself —
+  [`reports/50a9e694a1a4/report.md`](reports/50a9e694a1a4/report.md) (bronze,
+  byte-reproducible for that commit).
 - **Licence:** [EUPL-1.2](LICENSE) — public from day one.
 - **Python:** 3.12+
 - **Package/runner:** [`uv`](https://docs.astral.sh/uv/)

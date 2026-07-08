@@ -1,0 +1,84 @@
+{
+  "bronze": true,
+  "checks": [
+    {
+      "gaps": [],
+      "name": "reuse",
+      "status": "pass"
+    },
+    {
+      "gaps": [],
+      "name": "licence_consistency",
+      "status": "pass"
+    },
+    {
+      "gaps": [],
+      "name": "secrets",
+      "status": "pass"
+    },
+    {
+      "gaps": [],
+      "name": "sbom",
+      "status": "pass"
+    },
+    {
+      "gaps": [],
+      "name": "deps_reality",
+      "status": "pass"
+    }
+  ],
+  "commit": "50a9e694a1a457cdd0093498c8c2b17a0aeefea7",
+  "criteria": [
+    {
+      "id": "B1",
+      "passed": true,
+      "title": "REUSE-compliant"
+    },
+    {
+      "id": "B2",
+      "passed": true,
+      "title": "Licence consistent"
+    },
+    {
+      "id": "B3",
+      "passed": true,
+      "title": "No secrets"
+    },
+    {
+      "id": "B4",
+      "passed": true,
+      "title": "SBOM generates and matches declared deps"
+    },
+    {
+      "id": "B5",
+      "passed": true,
+      "title": "Transfer manifest present and valid"
+    },
+    {
+      "id": "B6",
+      "passed": true,
+      "title": "Contact/owner non-empty"
+    }
+  ],
+  "estafette_version": "0.1.0",
+  "manifest": {
+    "contact": "https://github.com/MWest2020/estafette/issues",
+    "licence": "EUPL-1.2",
+    "name": "estafette",
+    "owner": "estafette contributors",
+    "status": "poc"
+  },
+  "silver_preview": {
+    "available": false,
+    "classification": null,
+    "gaps": [],
+    "reason": "no build recipe declared in the manifest",
+    "would_pass": null
+  },
+  "tier_doc_version": "1.0",
+  "tool_versions": {
+    "gitleaks": "8.30.1",
+    "reuse": "6.2.0",
+    "syft": "1.46.0"
+  }
+}
