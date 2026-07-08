@@ -24,9 +24,22 @@ def test_mismatched_pyproject_licence_fails(repo):
 
 
 def test_header_mismatch_detected(repo):
+    # REUSE-IgnoreStart
     target = repo({"code.py": "# SPDX-License-Identifier: MIT\nprint(1)\n"})
+    # REUSE-IgnoreEnd
     result = LicenceConsistencyCheck(_manifest("EUPL-1.2")).run(target)
     assert result.status is CheckStatus.failed
+
+
+def test_deep_spdx_string_is_not_a_header(repo):
+    # An SPDX identifier deep in a file (e.g. a test fixture or regex literal)
+    # must not be mistaken for the file's licence header.
+    # REUSE-IgnoreStart
+    body = "\n" * 30 + "value = 'SPDX-License-Identifier: MIT'\n"
+    # REUSE-IgnoreEnd
+    target = repo({"code.py": body})
+    result = LicenceConsistencyCheck(_manifest("EUPL-1.2")).run(target)
+    assert result.status is CheckStatus.passed
 
 
 def test_collect_sources_reads_package_json(repo):

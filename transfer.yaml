@@ -1,0 +1,10 @@
+name: estafette
+licence: EUPL-1.2
+owner: estafette contributors
+contact: https://github.com/MWest2020/estafette/issues
+status: poc
+deps:
+  - pydantic
+  - pyyaml
+  - typer
+deployment_target: cli

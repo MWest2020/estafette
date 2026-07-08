@@ -14,7 +14,13 @@ from pathlib import Path
 from estafette.checks.protocol import CheckResult, CheckStatus, Gap
 from estafette.manifest import TransferManifest
 
-_SPDX_RE = re.compile(r"SPDX-License-Identifier:\s*(\S+)")
+# Match a real SPDX header: a valid licence token, not arbitrary text. Only the
+# head of a file is scanned so SPDX strings that appear deep in source (test
+# fixtures, a regex literal like this one) are not mistaken for a file's header.
+# REUSE-IgnoreStart
+_SPDX_RE = re.compile(r"SPDX-License-Identifier:\s*([\w.+-]+)")
+# REUSE-IgnoreEnd
+_HEAD_LINES = 20
 _SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", "node_modules", "build", "dist", "LICENSES"}
 _HEADER_EXT = {".py", ".js", ".ts", ".go", ".java", ".rs", ".sh"}
 
@@ -47,7 +53,8 @@ def _header_licences(target: Path) -> set[str]:
     for path in target.rglob("*"):
         if path.suffix not in _HEADER_EXT or any(p in _SKIP_DIRS for p in path.parts):
             continue
-        match = _SPDX_RE.search(path.read_text(encoding="utf-8", errors="ignore"))
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        match = _SPDX_RE.search("\n".join(text.splitlines()[:_HEAD_LINES]))
         if match:
             found.add(match.group(1))
     return found

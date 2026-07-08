@@ -41,6 +41,18 @@ def test_clean_deps_pass(repo):
     assert result.status is CheckStatus.passed
 
 
+def test_alias_maps_import_to_package():
+    # `import yaml` satisfies a declared `pyyaml` dependency.
+    undeclared, unused = diff_deps(["pyyaml"], {"yaml"}, set())
+    assert undeclared == []
+    assert unused == []
+
+
+def test_test_dirs_are_not_scanned(repo):
+    target = repo({"src/app/__init__.py": "", "tests/test_x.py": "import pytest\n"})
+    assert "pytest" not in find_imports(target)
+
+
 def test_local_package_excluded(repo):
     target = repo(
         {"src/myapp/__init__.py": "", "src/myapp/main.py": "import myapp\nimport click\n"}

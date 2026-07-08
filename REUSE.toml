@@ -1,0 +1,9 @@
+version = 1
+
+# estafette licenses every file under EUPL-1.2. Rather than a header in each
+# file, this blanket annotation covers the tree; see https://reuse.software/.
+[[annotations]]
+path = ["**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "estafette contributors"
+SPDX-License-Identifier = "EUPL-1.2"

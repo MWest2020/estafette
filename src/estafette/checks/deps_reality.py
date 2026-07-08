@@ -15,14 +15,32 @@ from estafette.checks.protocol import CheckResult, CheckStatus, Gap
 from estafette.manifest import TransferManifest
 
 _IMPORT_RE = re.compile(r"^\s*(?:import|from)\s+([a-zA-Z_][\w]*)")
+# Test directories hold dev-only imports (pytest, local conftest), not runtime
+# dependencies, so they are excluded from the declared-runtime-deps comparison.
 _SKIP_DIRS = {
     ".git", ".venv", "venv", "__pycache__", "node_modules", "build", "dist", ".ruff_cache",
+    "tests", "test",
 }
 _STDLIB = set(sys.stdlib_module_names)
+
+# Common cases where the import name differs from the distribution/package name.
+_IMPORT_ALIASES = {
+    "yaml": "pyyaml",
+    "PIL": "pillow",
+    "cv2": "opencv-python",
+    "bs4": "beautifulsoup4",
+    "dateutil": "python-dateutil",
+    "dotenv": "python-dotenv",
+}
 
 
 def _normalise(name: str) -> str:
     return name.strip().lower().replace("_", "-")
+
+
+def _canonical(name: str) -> str:
+    """Normalise an import name to its distribution name where known."""
+    return _normalise(_IMPORT_ALIASES.get(name, name))
 
 
 def find_imports(target: Path) -> set[str]:
@@ -44,10 +62,10 @@ def diff_deps(
     """Return (undeclared imports, unused declared deps), both normalised-compared."""
     declared_norm = {_normalise(d) for d in declared}
     local_norm = {_normalise(name) for name in local}
-    external = {i for i in imports if i not in _STDLIB and _normalise(i) not in local_norm}
-    undeclared = sorted(i for i in external if _normalise(i) not in declared_norm)
-    imported_norm = {_normalise(i) for i in imports}
-    unused = sorted(d for d in declared if _normalise(d) not in imported_norm)
+    external = {i for i in imports if i not in _STDLIB and _canonical(i) not in local_norm}
+    undeclared = sorted(i for i in external if _canonical(i) not in declared_norm)
+    imported_canon = {_canonical(i) for i in imports}
+    unused = sorted(d for d in declared if _normalise(d) not in imported_canon)
     return undeclared, unused
 
 

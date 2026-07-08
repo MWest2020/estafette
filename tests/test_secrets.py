@@ -5,8 +5,11 @@ from conftest import requires
 from estafette.checks.protocol import CheckStatus
 from estafette.checks.secrets import SecretsCheck
 
-# A synthetic GitHub PAT: ghp_ + 36 chars. Not a real credential.
-FAKE_PAT = "ghp_" + "0123456789abcdefghij0123456789abcdef"
+# A synthetic GitHub PAT: ghp_ + 36 chars. Not a real credential. Built at
+# runtime (f-string over a variable) so the contiguous token is never baked as
+# a constant into the compiled .pyc — where a scanner would otherwise find it.
+_TOKEN_BODY = "0123456789abcdefghij0123456789abcdef"  # gitleaks:allow (synthetic test token)
+FAKE_PAT = f"ghp_{_TOKEN_BODY}"
 
 
 @requires("gitleaks")
