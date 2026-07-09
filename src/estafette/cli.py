@@ -14,6 +14,7 @@ import typer
 
 from estafette import __version__
 from estafette.assessment import build_checks, run_checks
+from estafette.catalogue import generate_site
 from estafette.checks.build import SilverPreview, preview_silver
 from estafette.checks.protocol import CheckResult, CheckStatus
 from estafette.checks.tooling import ToolNotFound
@@ -135,6 +136,20 @@ def assess(
         fg=typer.colors.GREEN if verdict.passed else typer.colors.YELLOW,
     )
     typer.echo(f"Report written: {report_dir / 'report.md'}")
+
+
+@app.command()
+def catalogue(
+    reports_dir: Annotated[
+        Path, typer.Option("--reports-dir", help="Directory of reports to render.")
+    ] = Path("reports"),
+    out: Annotated[
+        Path, typer.Option("--out", help="Output directory for the static site.")
+    ] = Path("site"),
+) -> None:
+    """Render the report database into a deterministic static catalogue site."""
+    count, index = generate_site(reports_dir, out)
+    typer.echo(f"Rendered {count} report(s) to {index}")
 
 
 if __name__ == "__main__":  # pragma: no cover

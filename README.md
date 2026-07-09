@@ -83,8 +83,21 @@ uvx estafette assess <path-or-git-url> [--manifest path/to/manifest.yaml]
 
 This produces `report.json` and a human-readable `report.md` under `reports/`.
 
-> The CLI is under construction. Track progress via the OpenSpec changes in
-> [`openspec/changes/`](openspec/changes/).
+### Catalogue (static site)
+
+`reports/` is an append-only database of assessments. Render it to a static
+catalogue that shows every assessed PoC:
+
+```bash
+estafette catalogue --reports-dir reports --out site
+```
+
+This writes `site/index.html` (one row per PoC: name, verdict, commit, gaps) plus
+a detail page per report — plain HTML, no server or database. A
+[Pages workflow](.github/workflows/pages.yml) deploys it to GitHub Pages on push.
+
+> One-time setup: in the repo's **Settings → Pages**, set the source to
+> **GitHub Actions** so the workflow can publish.
 
 ## The transfer manifest
 
