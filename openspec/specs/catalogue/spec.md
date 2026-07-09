@@ -5,25 +5,27 @@ TBD - created by archiving change catalogue-v1. Update Purpose after archive.
 ## Requirements
 ### Requirement: Static catalogue generation
 
-The system SHALL provide a command `estafette catalogue` that reads every
-`report.json` under a reports directory and renders a static site (an index page
-plus a per-report detail page) using only self-contained HTML and inline CSS —
-no server, no database engine, and no web framework.
+The system SHALL provide a command `estafette catalogue` that reads the **PoC
+entries** under a catalog directory and renders a static site (an index page
+plus a per-entry detail page) using only self-contained HTML and inline CSS — no
+server, no database engine, and no web framework. Every entry SHALL be listed
+with its conclusion; entries that reference an assessment SHALL show the bronze
+verdict badge; findings-only entries SHALL appear without a badge.
 
-#### Scenario: Index lists assessed PoCs
+#### Scenario: Index lists all entries with conclusions
 
-- **WHEN** `estafette catalogue --reports-dir <dir> --out <site>` runs over a directory containing reports
-- **THEN** `<site>/index.html` is written listing each report's PoC name, bronze verdict, and commit, each linking to its detail page
+- **WHEN** `estafette catalogue --catalog <dir> --out <site>` runs over a directory of entries
+- **THEN** `<site>/index.html` lists every entry with its name, kind, and conclusion, each linking to its detail page
 
-#### Scenario: Detail page per report
+#### Scenario: Verdict badge only where assessed
 
-- **WHEN** the catalogue is generated
-- **THEN** each report has a detail page showing its criteria, per-check gaps, and the silver preview
+- **WHEN** one entry references an assessment and another (findings-only) does not
+- **THEN** the first shows a bronze verdict badge and the second shows none, and both are listed
 
-#### Scenario: Empty reports directory
+#### Scenario: Empty catalog directory
 
-- **WHEN** the reports directory contains no reports
-- **THEN** the command writes an index page stating there are no reports yet, and does not crash
+- **WHEN** the catalog directory contains no entries
+- **THEN** the command writes an index page stating there are no entries yet, and does not crash
 
 ### Requirement: Deterministic site
 
