@@ -94,10 +94,10 @@ estafette catalogue --reports-dir reports --out site
 
 This writes `site/index.html` (one row per PoC: name, verdict, commit, gaps) plus
 a detail page per report — plain HTML, no server or database. A
-[Pages workflow](.github/workflows/pages.yml) deploys it to GitHub Pages on push.
+[Pages workflow](.github/workflows/pages.yml) builds it from `reports/` and
+deploys it to GitHub Pages on every push.
 
-> One-time setup: in the repo's **Settings → Pages**, set the source to
-> **GitHub Actions** so the workflow can publish.
+**Live catalogue: https://mwest2020.github.io/estafette/**
 
 ## The transfer manifest
 
