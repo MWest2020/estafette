@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
     paths:
+      - "catalog/**"
       - "reports/**"
       - "src/estafette/catalogue.py"
+      - "src/estafette/entry.py"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -35,7 +37,7 @@ jobs:
       - name: Build catalogue
         run: |
           uv sync --dev
-          uv run estafette catalogue --reports-dir reports --out site
+          uv run estafette catalogue --catalog catalog --out site
 
       - uses: actions/configure-pages@v5
         with:

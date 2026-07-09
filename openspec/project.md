@@ -167,6 +167,17 @@ framework. This supersedes the v1 "no catalogue" scope line below; "estafette is
 a CLI" still holds, because the site is a CLI-emitted static artifact. A real
 database can later slot in behind the same report loader without a rewrite.
 
+**Platform-first reframe (`entry-model-v1`):** the catalogue is the product; the
+unit is a **PoC entry**, which may deliver **code, only findings, or both**. The
+mechanical verdict is an *optional badge*, not a gate. A PoC that only produced
+findings is a first-class entry. To avoid reinventing the wheel (I2), the entry
+**wraps `publiccode.yml`** (software-only, no `poc` status, no conclusion field)
+rather than forking it: it adds only `kind` + `conclusion` and references a real
+publiccode.yml (for code → OpenCatalogi on-ramp) and an optional estafette
+assessment. Entries are portable YAML under `catalog/`. The **submission /
+hosting / harvester** ("watcher") that ingests entries from many orgs — login vs
+open, push vs crawl — is the next design step, deliberately not yet built.
+
 ## Conventions
 
 - **Workflow:** OpenSpec (propose → apply → archive). Non-trivial work starts

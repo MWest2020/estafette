@@ -1,0 +1,14 @@
+name: estafette
+owner: estafette contributors
+contact: https://github.com/MWest2020/estafette/issues
+status: poc
+kind: code
+conclusion: >-
+  A CLI that mechanically assesses whether a proof of concept is transferable
+  (REUSE, licence consistency, secrets, SBOM vs declared deps, manifest) and
+  emits a byte-reproducible report with a bronze verdict, plus an informational
+  silver preview from a rootless-podman build harness. Dogfooding it on itself
+  reached bronze and surfaced (then fixed) real bugs in the licence and
+  dependency checks. Verdict is a bonus; the point is sharing the PoC.
+repo: https://github.com/MWest2020/estafette
+assessment: reports/50a9e694a1a4/report.json

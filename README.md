@@ -85,17 +85,20 @@ This produces `report.json` and a human-readable `report.md` under `reports/`.
 
 ### Catalogue (static site)
 
-`reports/` is an append-only database of assessments. Render it to a static
-catalogue that shows every assessed PoC:
+The catalogue shares **PoC entries** — each a proof of concept that delivered
+code, only findings, or both. The transferability verdict is an optional badge,
+not a requirement. Entries are YAML files under `catalog/` (see
+[`docs/catalog-spec.md`](docs/catalog-spec.md)); they *wrap* `publiccode.yml`
+rather than reinventing it, adding only `kind` and `conclusion`.
 
 ```bash
-estafette catalogue --reports-dir reports --out site
+estafette catalogue --catalog catalog --out site
 ```
 
-This writes `site/index.html` (one row per PoC: name, verdict, commit, gaps) plus
-a detail page per report — plain HTML, no server or database. A
-[Pages workflow](.github/workflows/pages.yml) builds it from `reports/` and
-deploys it to GitHub Pages on every push.
+This writes `site/index.html` (one row per PoC: name, kind, status, verdict badge
+where assessed, conclusion) plus a detail page per entry — plain HTML, no server
+or database. A [Pages workflow](.github/workflows/pages.yml) builds it from
+`catalog/` and deploys to GitHub Pages on every push.
 
 **Live catalogue: https://mwest2020.github.io/estafette/**
 

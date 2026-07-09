@@ -140,16 +140,16 @@ def assess(
 
 @app.command()
 def catalogue(
-    reports_dir: Annotated[
-        Path, typer.Option("--reports-dir", help="Directory of reports to render.")
-    ] = Path("reports"),
+    catalog: Annotated[
+        Path, typer.Option("--catalog", help="Directory of PoC entry YAML files.")
+    ] = Path("catalog"),
     out: Annotated[
         Path, typer.Option("--out", help="Output directory for the static site.")
     ] = Path("site"),
 ) -> None:
-    """Render the report database into a deterministic static catalogue site."""
-    count, index = generate_site(reports_dir, out)
-    typer.echo(f"Rendered {count} report(s) to {index}")
+    """Render the PoC catalogue (entries) into a deterministic static site."""
+    count, index = generate_site(catalog, out)
+    typer.echo(f"Rendered {count} entr(y/ies) to {index}")
 
 
 if __name__ == "__main__":  # pragma: no cover
