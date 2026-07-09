@@ -23,4 +23,4 @@
 
 - [x] 4.1 `docs/catalog-spec.md` (entry fields; publiccode-wrapping principle)
 - [x] 4.2 `project.md` platform note (entries; verdict as bonus; harvester deferred)
-- [ ] 4.3 `ruff` + `pytest` green; every module ≤ 200 lines (I7); CI stays green
+- [x] 4.3 `ruff` + `pytest` green; every module ≤ 200 lines (I7); CI stays green
