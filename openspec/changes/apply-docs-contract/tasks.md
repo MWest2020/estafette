@@ -13,6 +13,9 @@
 - [x] 2.4 `.mcp.json` in de root plaatsen (template uit de seed; placeholder `TODO-change-3` laten staan).
 - [x] 3.1 Zelfcheck tegen het contract: alleen toegestane submappen dragen
       markdown, elke pagina heeft front matter, één taal (English).
-- [ ] 4.1 PR openen met titel `docs: apply handbook docs contract`; body vinkt
+- [~] 4.1 PR openen met titel `docs: apply handbook docs contract`; body vinkt
       per contractpunt af wat is toegepast + vermeldt de punten die de
       proposal als "PR-body" markeert. STOP daarna: Mark merget.
+      Branch `habitat/builder/apply-docs-contract` is gepusht naar origin; PR
+      kon niet automatisch geopend worden (geen `gh` CLI / GitHub-token in deze
+      omgeving). Open-URL en kant-en-klare PR-body staan in het run-report.
