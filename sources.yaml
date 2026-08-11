@@ -1,0 +1,15 @@
+# Repos to harvest for PoC entries — a repo list, not a file list.
+#
+# Each repo hosts a well-known `poc.yaml` at its root (publiccode.yml is the
+# fallback, wrapped as kind=code). Discovery is by convention, mirroring how
+# OpenCatalogi harvests publiccode.yml (invariant I2). `estafette harvest`
+# fetches `<repo>/poc.yaml` (raw HTTPS GET) from each and writes normalised
+# entries into `catalog/.harvested/`, which `estafette catalogue` also renders.
+#
+# One raw base URL per repo (the harvester appends `/poc.yaml`). Adding a repo
+# here is all it takes; see docs/submitting.md.
+sources:
+  # estafette itself — self-harvestable via its root poc.yaml.
+  - https://raw.githubusercontent.com/MWest2020/estafette/HEAD
+  # Add other PoC-hosting repos below, e.g.:
+  # - https://raw.githubusercontent.com/<org>/<repo>/HEAD

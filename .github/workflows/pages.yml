@@ -6,8 +6,11 @@ on:
     paths:
       - "catalog/**"
       - "reports/**"
+      - "sources.yaml"
+      - "poc.yaml"
       - "src/estafette/catalogue.py"
       - "src/estafette/entry.py"
+      - "src/estafette/harvest.py"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -34,9 +37,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build catalogue
+      - name: Harvest + build catalogue
         run: |
           uv sync --dev
+          # Pull well-known poc.yaml from every repo in sources.yaml (soft-fail per
+          # source), then render local + harvested entries into the static site.
+          uv run estafette harvest --sources sources.yaml --catalog catalog
           uv run estafette catalogue --catalog catalog --out site
 
       - uses: actions/configure-pages@v5

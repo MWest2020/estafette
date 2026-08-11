@@ -12,7 +12,7 @@ import re
 from html import escape
 from pathlib import Path
 
-from estafette.entry import PoCEntry, load_entries
+from estafette.entry import PoCEntry, load_merged_entries
 from estafette.report import TransferabilityReport
 
 _CSS = """
@@ -117,7 +117,7 @@ def render_detail(entry: PoCEntry, report: TransferabilityReport | None) -> str:
 def generate_site(catalog_dir: Path, out_dir: Path, base: Path | None = None) -> tuple[int, Path]:
     """Render the catalogue to ``out_dir``; return (entry count, index path)."""
     base = base if base is not None else Path(".")
-    entries = load_entries(catalog_dir)
+    entries = load_merged_entries(catalog_dir)
     pairs = [(e, _load_assessment(e, base)) for e in entries]
     out_dir.mkdir(parents=True, exist_ok=True)
     for entry, report in pairs:

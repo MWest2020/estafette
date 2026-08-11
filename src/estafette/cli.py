@@ -18,6 +18,9 @@ from estafette.catalogue import generate_site
 from estafette.checks.build import SilverPreview, preview_silver
 from estafette.checks.protocol import CheckResult, CheckStatus
 from estafette.checks.tooling import ToolNotFound
+from estafette.entry import EntryError, validate_entries
+from estafette.harvest import harvest as run_harvest
+from estafette.harvest import load_sources
 from estafette.manifest import (
     ManifestError,
     TransferManifest,
@@ -146,10 +149,45 @@ def catalogue(
     out: Annotated[
         Path, typer.Option("--out", help="Output directory for the static site.")
     ] = Path("site"),
+    check: Annotated[
+        bool,
+        typer.Option("--check", help="Strictly validate entries and exit; no rendering (CI gate)."),
+    ] = False,
 ) -> None:
-    """Render the PoC catalogue (entries) into a deterministic static site."""
+    """Render the PoC catalogue (entries) into a deterministic static site.
+
+    With ``--check`` it instead validates ``catalog/*.yaml`` strictly and exits
+    non-zero naming the first invalid file — the PR-submission gate.
+    """
+    if check:
+        try:
+            valid = validate_entries(catalog)
+        except EntryError as exc:
+            typer.secho(f"invalid entry: {exc}", fg=typer.colors.RED, err=True)
+            raise typer.Exit(code=1) from exc
+        typer.echo(f"All {valid} catalog entr(y/ies) valid.")
+        return
     count, index = generate_site(catalog, out)
     typer.echo(f"Rendered {count} entr(y/ies) to {index}")
+
+
+@app.command()
+def harvest(
+    sources: Annotated[
+        Path, typer.Option("--sources", help="YAML list of repos to harvest.")
+    ] = Path("sources.yaml"),
+    catalog: Annotated[
+        Path, typer.Option("--catalog", help="Catalog dir; harvest writes to its .harvested/.")
+    ] = Path("catalog"),
+) -> None:
+    """Fetch each repo's poc.yaml (publiccode.yml fallback) into catalog/.harvested/."""
+    try:
+        srcs = load_sources(sources)
+    except ValueError as exc:
+        typer.secho(str(exc), fg=typer.colors.RED, err=True)
+        raise typer.Exit(code=1) from exc
+    result = run_harvest(srcs, catalog / ".harvested")
+    typer.echo(result.summary)
 
 
 if __name__ == "__main__":  # pragma: no cover

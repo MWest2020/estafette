@@ -175,8 +175,13 @@ findings is a first-class entry. To avoid reinventing the wheel (I2), the entry
 rather than forking it: it adds only `kind` + `conclusion` and references a real
 publiccode.yml (for code → OpenCatalogi on-ramp) and an optional estafette
 assessment. Entries are portable YAML under `catalog/`. The **submission /
-hosting / harvester** ("watcher") that ingests entries from many orgs — login vs
-open, push vs crawl — is the next design step, deliberately not yet built.
+hosting / harvester** ("watcher") that ingests entries from many orgs is built
+(`submission-v1`): two on-ramps in their simplest honest form — **PR submission**
+(add a `catalog/*.yaml`; CI validates it via `estafette catalogue --check`) and a
+**crawl/harvester** (`estafette harvest` pulls a well-known `poc.yaml`, publiccode
+fallback, from each repo in `sources.yaml`). Both feed one deterministic entry
+set; local wins on a name collision. No server, no DB, no auth — raw fetch only,
+org-crawl-via-API deliberately deferred. See `docs/submitting.md`.
 
 ## Conventions
 

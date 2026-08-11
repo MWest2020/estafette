@@ -23,3 +23,7 @@ dist/
 # estafette scratch (real reports under reports/ are committed on purpose)
 *.tmp
 scratch/
+
+# Harvested PoC entries are rebuilt by `estafette harvest` at build time from
+# sources.yaml — a cache, not source of truth. Local catalog/*.yaml is committed.
+catalog/.harvested/
