@@ -1,3 +1,8 @@
+---
+status: draft
+last_reviewed: 2026-09-03
+---
+
 # Submitting a PoC to the catalogue
 
 There are two ways to get a proof of concept into the catalogue. Both produce the
