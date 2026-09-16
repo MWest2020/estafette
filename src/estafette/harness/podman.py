@@ -12,6 +12,7 @@ import shutil
 import subprocess
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from pathlib import Path
 
 from estafette.manifest import BuildSpec, Readiness
 
@@ -57,11 +58,41 @@ def podman_usable() -> tuple[bool, str]:
     return True, ""
 
 
+class ContainerfileOutsideContext(ValueError):
+    """The declared build recipe points outside the target being assessed."""
+
+
 def build_argv(context: str, containerfile: str | None, tag: str = _IMAGE_TAG) -> list[str]:
-    """`podman build` — the build stage (network permitted for dependency fetch)."""
+    """`podman build` — the build stage (network permitted for dependency fetch).
+
+    The containerfile is resolved against the CONTEXT, not against the current
+    working directory. Podman resolves a bare ``-f Containerfile`` against the
+    cwd and only falls back to the context, so the same assess run would build a
+    different file depending on where you started it.
+
+    Found by dogfooding on 2026-09-16: declaring a build recipe in estafette's
+    own manifest put a ``Containerfile`` in the repo root, and the live harness
+    test — which writes its own ``FROM alpine:3.20`` into a tmpdir — built
+    ``FROM python:3.12-slim`` instead. It had been passing only because no such
+    file happened to exist at the cwd.
+
+    That is not cosmetic. ``estafette assess ../someone-elses-repo`` run from
+    your own checkout would build YOUR recipe against THEIR context, and the
+    silver verdict would be about the wrong code entirely.
+
+    A recipe that points outside the context is refused. The manifest comes from
+    the target — that is, from a repo you are assessing precisely because you do
+    not trust it yet — so ``../../etc`` is not a path to follow politely.
+    """
     argv = ["podman", "build", "-t", tag]
     if containerfile:
-        argv += ["-f", containerfile]
+        root = Path(context).resolve()
+        pad = (root / containerfile).resolve()
+        if not pad.is_relative_to(root):
+            raise ContainerfileOutsideContext(
+                f"containerfile {containerfile!r} resolves outside the build context"
+            )
+        argv += ["-f", str(pad)]
     argv.append(context)
     return argv
 

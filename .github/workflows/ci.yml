@@ -35,3 +35,42 @@ jobs:
 
       - name: Test
         run: uv run pytest
+
+      # Dogfood: estafette op zichzelf. Hier, en niet op een werkstation, omdat
+      # de silver-tier rootless podman nodig heeft — dat werkt niet in een
+      # unprivileged LXC, maar wel op een runner. Bijkomend voordeel: het
+      # rapport krijgt een publieke URL die een buitenstaander kan nakijken, en
+      # dat is precies wat overdraagbaarheid hoort te betekenen.
+      - name: Podman aanwezig
+        run: podman --version && podman info --format '{{.Host.Security.Rootless}}'
+
+      - name: Dogfood — assess op de eigen repo
+        run: uv run estafette assess .
+
+      # `assess` eindigt ALTIJD met 0, ook bij een FAIL-verdict: het is een
+      # rapportagecommando, geen gate. Zonder deze stap zou CI groen staan
+      # terwijl de eigen overdraagbaarheid stuk is.
+      - name: Poort op het verdict
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, sys
+          nieuwste = max(pathlib.Path("reports").glob("*/report.json"),
+                         key=lambda p: p.stat().st_mtime)
+          d = json.loads(nieuwste.read_text())
+          zilver = d.get("silver_preview") or {}
+          print(f"rapport: {nieuwste}")
+          print(f"bronze: {d.get('bronze')}")
+          print(f"silver: beschikbaar={zilver.get('available')} "
+                f"zou-slagen={zilver.get('would_pass')} reden={zilver.get('reason')}")
+          for g in zilver.get("gaps") or []:
+              print(f"  silver-gat: {g}")
+          if not d.get("bronze"):
+              sys.exit("FAIL: eigen repo haalt bronze niet")
+          PY
+
+      - name: Rapport bewaren
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transferability-report
+          path: reports/

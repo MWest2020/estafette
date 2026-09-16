@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from estafette.harness.podman import (
+    ContainerfileOutsideContext,
     HarnessOutcome,
     PodmanHarness,
     StageResult,
@@ -28,8 +29,32 @@ def test_run_argv_enforces_i4_isolation():
 def test_build_argv_shape():
     argv = build_argv("/repo", "Containerfile")
     assert argv[:2] == ["podman", "build"]
-    assert "-f" in argv and "Containerfile" in argv
+    assert "-f" in argv and "/repo/Containerfile" in argv
     assert argv[-1] == "/repo"
+
+
+def test_build_argv_resolves_against_the_context_not_the_cwd():
+    """Podman resolves a bare `-f Containerfile` against the CWD and only then
+    falls back to the context. Found by dogfooding: declaring a build recipe put
+    a Containerfile in estafette's own root, and the live harness test — which
+    writes its own into a tmpdir — built the repo one instead.
+
+    `estafette assess ../someone-elses-repo` would otherwise build YOUR recipe
+    against THEIR context, and judge the wrong code.
+    """
+    argv = build_argv("/repo", "Containerfile")
+    assert argv[argv.index("-f") + 1] == "/repo/Containerfile"
+
+
+def test_build_argv_refuses_a_recipe_outside_the_context():
+    """The manifest comes from the target — a repo you are assessing precisely
+    because you do not trust it yet. `../../etc` is not a path to follow."""
+    with pytest.raises(ContainerfileOutsideContext):
+        build_argv("/repo", "../../etc/passwd")
+
+
+def test_build_argv_without_a_recipe_passes_no_dash_f():
+    assert "-f" not in build_argv("/repo", None)
 
 
 def test_reached_running_state_exits_zero():
