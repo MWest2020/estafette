@@ -7,14 +7,13 @@ is heuristic in v1 (Python-focused); see the change's design.md.
 
 from __future__ import annotations
 
-import re
+import ast
 import sys
 from pathlib import Path
 
 from estafette.checks.protocol import CheckResult, CheckStatus, Gap
 from estafette.manifest import TransferManifest
 
-_IMPORT_RE = re.compile(r"^\s*(?:import|from)\s+([a-zA-Z_][\w]*)")
 # Test directories hold dev-only imports (pytest, local conftest), not runtime
 # dependencies, so they are excluded from the declared-runtime-deps comparison.
 _SKIP_DIRS = {
@@ -44,15 +43,37 @@ def _canonical(name: str) -> str:
 
 
 def find_imports(target: Path) -> set[str]:
-    """Top-level modules imported by the Python files under ``target``."""
+    """Top-level modules imported by the Python files under ``target``.
+
+    Via de syntaxboom, niet via een regex over de rauwe tekst. Een regex die op
+    ``^\s*(?:import|from)\s+(\w+)`` matcht leest ook proza: een docstring-regel
+    als "from the public site" levert dan een dependency ``the``.
+
+    Gemeten op 2026-09-16 op MWest2020/internetnl-cli: zeven meldingen, waarvan
+    drie geen pakket waren (``a``, ``here``, ``the``). Dat is niet alleen ruis —
+    het advies erbij luidde letterlijk "Add 'the' to the manifest", en een gate
+    die je dat aanraadt, leert je hem te negeren.
+
+    Een bestand dat niet parseert wordt overgeslagen. Dat is bewust: het gaat om
+    een repo die je nog niet vertrouwt, en een half bestand is geen reden om de
+    hele beoordeling te laten omvallen.
+    """
     found: set[str] = set()
     for path in target.rglob("*.py"):
         if any(part in _SKIP_DIRS for part in path.parts):
             continue
-        for line in path.read_text(encoding="utf-8", errors="ignore").splitlines():
-            match = _IMPORT_RE.match(line)
-            if match:
-                found.add(match.group(1))
+        try:
+            boom = ast.parse(path.read_text(encoding="utf-8", errors="ignore"))
+        except (SyntaxError, ValueError):
+            continue
+        for node in ast.walk(boom):
+            if isinstance(node, ast.Import):
+                for alias in node.names:
+                    found.add(alias.name.split(".")[0])
+            elif isinstance(node, ast.ImportFrom):
+                # level > 0 is een relatieve import: eigen code, geen dependency.
+                if node.level == 0 and node.module:
+                    found.add(node.module.split(".")[0])
     return found
 
 
