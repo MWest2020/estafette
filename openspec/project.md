@@ -8,7 +8,7 @@ measurably so**. It is a CLI that mechanically assesses a repository against a
 *transfer manifest* and produces a **transferability report** with a tier
 verdict. It orchestrates existing scanners; it does not reinvent them.
 
-- **Licence:** EUPL-1.2 (see `LICENSE`), public from day one.
+- **Licence:** MIT (see `LICENSE`), public from day one.
 - **Language:** Python 3.12+.
 - **Docs:** English.
 - **This repository is the evidence artefact for the SIDN Pioniers grant
@@ -54,7 +54,7 @@ merged.
 ```
 estafette/
   pyproject.toml            # uv-managed, console script: estafette
-  LICENSE                   # EUPL-1.2
+  LICENSE                   # MIT
   src/estafette/
     manifest.py             # TransferManifest (pydantic): licence, deps,
                             #   data requirements (schema/volume/sensitivity/

@@ -15,7 +15,7 @@ them.
 - **Example report (SIDN Pioniers annex):** estafette assessed on itself —
   [`reports/50a9e694a1a4/report.md`](reports/50a9e694a1a4/report.md) (bronze,
   byte-reproducible for that commit).
-- **Licence:** [EUPL-1.2](LICENSE) — public from day one.
+- **Licence:** [MIT](LICENSE) — public from day one.
 - **Python:** 3.12+
 - **Package/runner:** [`uv`](https://docs.astral.sh/uv/)
 
@@ -145,4 +145,4 @@ uv run ruff check  # lint
 
 ## Licence
 
-[EUPL-1.2](LICENSE). Copyright the estafette contributors.
+[MIT](LICENSE). Copyright (c) 2026 Mark West.
